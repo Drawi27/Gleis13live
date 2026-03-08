@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLEIS 13</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="crt">
+<!-- ═══ SPLASH SCREEN ═══ -->
+<div class="splash" id="splash">
+  <div class="splash-logo">
+    <span class="splash-gleis">GLEIS</span><span class="splash-13">13</span>
+  </div>
+  <div class="splash-sub">Mixes · Sets · Essen</div>
+  <div class="splash-line"></div>
+  <div class="splash-dots">
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+  </div>
+</div>
+
+<!-- ═══ MAIN VIEW ═══ -->
+<div id="view-main">
+  <header>
+    <div class="logo" onclick="showMain()">GLEIS<em>13</em></div>
+    <nav>
+      <a href="#" id="nav-mixes" class="active" onclick="showView('mixes')">Mixes</a>
+      <a href="#" id="nav-artists" onclick="showView('artists')">Artists</a>
+      <a href="#" id="nav-info" onclick="showView('info')">Info</a>
+      <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn-main" title="Dark/Light Mode">☀</button>
+      <button class="nav-user" id="nav-user-main" onclick="userAction()"><span class="user-dot"></span><span id="nav-user-label-main">Login</span></button>
+    </nav>
+  </header>
+
+  <div class="ticker">
+    <div class="ticker-inner" id="ticker-inner">
+      <span>GLEIS 13</span><span class="tick-dot">·</span>
+      <span>Mixes & Sets</span><span class="tick-dot">·</span>
+      <span>Essen</span><span class="tick-dot">·</span>
+      <span>GLEIS 13</span><span class="tick-dot">·</span>
+      <span>Mixes & Sets</span><span class="tick-dot">·</span>
+      <span>Essen</span><span class="tick-dot">·</span>
+    </div>
+  </div>
+
+  <div class="filter-bar" id="filter-bar">
+    <span class="filter-label">Genre</span>
+    <button class="ftag active" data-filter="all">Alle</button>
+  </div>
+
+  <div class="count-bar">
+    <span class="count-label" id="count">—</span>
+    <span class="count-label">Sets & Mixes</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    <div class="footer-logo">GLEIS<em>13</em></div>
+    <div class="footer-meta">Unabhängiges Radio-Archiv</div>
+  </footer>
+</div>
+
+
+<!-- ═══ INFO VIEW ═══ -->
+<div id="view-info" class="hidden">
+  <header>
+    <div class="logo" onclick="showView('mixes')">GLEIS<em>13</em></div>
+    <nav>
+      <a href="#" id="nav-mixes-info" onclick="showView('mixes')">Mixes</a>
+      <a href="#" id="nav-artists-info" onclick="showView('artists')">Artists</a>
+      <a href="#" class="active">Info</a>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Dark/Light Mode">☀</button>
+      <button class="nav-user" onclick="userAction()"><span class="user-dot"></span><span class="nav-user-label">Login</span></button>
+    </nav>
+  </header>
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span>GLEIS 13</span><span class="tick-dot">·</span>
+      <span>Über uns</span><span class="tick-dot">·</span>
+      <span>Essen</span><span class="tick-dot">·</span>
+      <span>GLEIS 13</span><span class="tick-dot">·</span>
+      <span>Über uns</span><span class="tick-dot">·</span>
+      <span>Essen</span><span class="tick-dot">·</span>
+    </div>
+  </div>
+
+  <div class="info-grid" style="display:grid;grid-template-columns:1fr 1fr;border-left:var(--b);min-height:calc(100vh - 78px)">
+
+    <!-- LEFT: ABOUT -->
+    <div class="info-left" style="border-right:var(--b);border-bottom:var(--b)">
+      <div style="padding:1rem 2rem;border-bottom:var(--b);display:flex;align-items:center;justify-content:space-between;background:var(--light)">
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.02em">Über GLEIS 13</span>
+        <span style="font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grey)">Est. 2024 · Essen</span>
+      </div>
+      <div style="padding:2.5rem 2.5rem;max-width:560px">
+        <!-- PLATZHALTER TEXT — bitte ersetzen -->
+        <p id="info-dyn-headline" style="font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:.02em;line-height:1.05;margin-bottom:1.5rem;color:var(--fg)">Ein Archiv für elektronische Musik aus Essen.</p>
+        <p style="font-size:.72rem;line-height:1.75;color:#555;margin-bottom:1.25rem;letter-spacing:.02em">
+          <span id="info-dyn-p1">GLEIS 13 ist ein unabhängiges Archiv für Mixes, Sets und Aufnahmen aus der Essener elektronischen Musikszene. Gegründet mit dem Ziel, Musik zu dokumentieren und zugänglich zu machen, die sonst in Vergessenheit geraten würde.</span>
+        </p>
+        <p style="font-size:.72rem;line-height:1.75;color:#555;margin-bottom:1.25rem;letter-spacing:.02em">
+          <span id="info-dyn-p2">Das Archiv wächst kontinuierlich. Jede Aufnahme wird mit Datum, Genre und Kontext versehen — als Momentaufnahme einer lebendigen Szene.</span>
+        </p>
+        <p style="font-size:.62rem;line-height:1.6;color:#aaa;letter-spacing:.06em;text-transform:uppercase;border-top:1px solid #ddd;padding-top:1rem;margin-top:1.5rem">
+          ↳ Dieser Text ist ein Platzhalter — bitte im Admin-Bereich ersetzen.
+        </p>
+      </div>
+    </div>
+
+    <!-- RIGHT: STATS + CONTACT -->
+    <div style="display:flex;flex-direction:column">
+
+      <!-- STATS -->
+      <div style="border-bottom:var(--b);padding:1rem 2rem;background:var(--light);display:flex;align-items:center;justify-content:space-between">
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.02em">Archiv</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:var(--b)">
+        <div style="padding:1.5rem 2rem;border-right:var(--b)">
+          <div id="info-set-count" style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:.02em;line-height:1">—</div>
+          <div style="font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--grey);margin-top:.25rem">Sets & Mixes</div>
+        </div>
+        <div style="padding:1.5rem 2rem">
+          <div id="info-genre-count" style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:.02em;line-height:1">—</div>
+          <div style="font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--grey);margin-top:.25rem">Genres</div>
+        </div>
+      </div>
+
+      <!-- CONTACT -->
+      <div style="border-bottom:var(--b);padding:1rem 2rem;background:var(--light);display:flex;align-items:center;justify-content:space-between">
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.02em">Kontakt</span>
+      </div>
+      <div style="padding:1.5rem 2rem;display:flex;flex-direction:column;gap:.75rem">
+        <div style="display:flex;align-items:center;gap:1rem;border-bottom:1px solid #eee;padding-bottom:.75rem">
+          <span style="font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;color:var(--grey);width:80px;flex-shrink:0">E-Mail</span>
+          <span id="info-dyn-email" style="font-size:.7rem;color:var(--fg);letter-spacing:.04em">hallo@gleis13.de</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem;border-bottom:1px solid #eee;padding-bottom:.75rem">
+          <span style="font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;color:var(--grey);width:80px;flex-shrink:0">Instagram</span>
+          <span id="info-dyn-instagram" style="font-size:.7rem;color:var(--fg);letter-spacing:.04em">@gleis13.essen</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <span style="font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;color:var(--grey);width:80px;flex-shrink:0">Soundcloud</span>
+          <span id="info-dyn-soundcloud" style="font-size:.7rem;color:var(--fg);letter-spacing:.04em">soundcloud.com/gleis13</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">GLEIS<em>13</em></div>
+    <div class="footer-meta">Unabhängiges Radio-Archiv · Essen</div>
+  </footer>
+</div>
+
+
+<!-- ═══ ARTISTS VIEW ═══ -->
+<div id="view-artists" class="hidden">
+  <header>
+    <div class="logo" onclick="showView('mixes')">GLEIS<em>13</em></div>
+    <nav>
+      <a href="#" onclick="showView('mixes')">Mixes</a>
+      <a href="#" class="active">Artists</a>
+      <a href="#" onclick="showView('info')">Info</a>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Dark/Light Mode">☀</button>
+      <button class="nav-user" onclick="userAction()"><span class="user-dot"></span><span class="nav-user-label">Login</span></button>
+    </nav>
+  </header>
+  <div class="ticker">
+    <div class="ticker-inner" id="artists-ticker">
+      <span>GLEIS 13</span><span class="tick-dot">·</span>
+      <span>Artists</span><span class="tick-dot">·</span>
+      <span>Essen</span><span class="tick-dot">·</span>
+      <span>GLEIS 13</span><span class="tick-dot">·</span>
+      <span>Artists</span><span class="tick-dot">·</span>
+    </div>
+  </div>
+
+  <!-- ARTIST LIST + DETAIL -->
+  <div class="artists-grid" style="display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 78px);border-left:var(--b)">
+
+    <!-- LEFT: artist list -->
+    <div class="artists-sidebar" style="border-right:var(--b);overflow-y:auto">
+      <div style="padding:.6rem 1rem;border-bottom:var(--b);background:var(--light);display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;color:var(--grey)">Artists</span>
+        <span id="artists-count" style="font-size:.54rem;letter-spacing:.1em;color:var(--grey)">—</span>
+      </div>
+      <div id="artists-list"></div>
+    </div>
+
+    <!-- RIGHT: artist detail -->
+    <div id="artists-detail" style="overflow-y:auto">
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--grey);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase">
+        ← Artist auswählen
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">GLEIS<em>13</em></div>
+    <div class="footer-meta">Unabhängiges Radio-Archiv · Essen</div>
+  </footer>
+</div>
+
+<!-- ═══ FAVORITES VIEW ═══ -->
+<div id="view-favs" class="hidden">
+  <header>
+    <div class="logo" onclick="showView('mixes')">GLEIS<em>13</em></div>
+    <nav>
+      <a href="#" onclick="showView('mixes')">Mixes</a>
+      <a href="#" class="active">Favoriten</a>
+      <a href="#" onclick="showView('artists')">Artists</a>
+      <a href="#" onclick="showView('info')">Info</a>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Dark/Light Mode">☀</button>
+      <button class="nav-user" onclick="userAction()"><span class="user-dot"></span><span class="nav-user-label">Login</span></button>
+    </nav>
+  </header>
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span>GLEIS 13</span><span class="tick-dot">·</span>
+      <span>Deine Favoriten</span><span class="tick-dot">·</span>
+      <span>GLEIS 13</span><span class="tick-dot">·</span>
+      <span>Deine Favoriten</span><span class="tick-dot">·</span>
+    </div>
+  </div>
+  <div class="count-bar">
+    <span class="count-label" id="fav-count">—</span>
+    <span class="count-label">Favoriten</span>
+  </div>
+  <div class="grid" id="fav-grid"></div>
+  <footer>
+    <div class="footer-logo">GLEIS<em>13</em></div>
+    <div class="footer-meta">Deine gespeicherten Sets</div>
+  </footer>
+</div>
+
+<div id="view-login" class="hidden"></div>
+<!-- ═══ ADMIN VIEW ═══ -->
+<div id="view-admin" class="hidden">
+  <div class="admin-header">
+    <div class="admin-logo" onclick="showMain()">GLEIS<em>13</em></div>
+    <div class="admin-badge">Admin</div>
+    <div style="display:flex;gap:0;margin-left:1rem;border:1px solid #333">
+      <button id="admin-tab-sets" onclick="adminShowTab('sets')" style="background:var(--fg);border:none;color:var(--bg);padding:.35rem .9rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-right:1px solid #333">Sets</button>
+      <button id="admin-tab-artists" onclick="adminShowTab('artists')" style="background:none;border:none;color:#888;padding:.35rem .9rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-right:1px solid #333">Artists</button>
+      <button id="admin-tab-info" onclick="adminShowTab('info')" style="background:none;border:none;color:#888;padding:.35rem .9rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer">Info-Text</button>
+    </div>
+    <button class="admin-back" onclick="showMain()">← Zur Seite</button>
+  </div>
+
+  <!-- SETS TAB -->
+  <div id="admin-tab-sets-panel" class="admin-layout">
+    <!-- LIST -->
+    <div class="admin-list-panel">
+      <div class="admin-panel-head">
+        <div class="admin-panel-title">Alle Sets</div>
+        <span class="admin-set-count" id="admin-count">—</span>
+      </div>
+      <div id="admin-list"><div class="admin-empty">Lade…</div></div>
+    </div>
+
+    <!-- FORM -->
+    <div class="admin-form-panel">
+      <div class="form-chrome">
+        <div class="dots"><div class="dot"></div><div class="dot"></div></div>
+        <div class="form-chrome-title" id="form-title">Neues Set hinzufügen</div>
+      </div>
+      <div class="form-body">
+
+        <div class="field">
+          <label class="field-label">SoundCloud / YouTube URL *</label>
+          <div class="field-hint">soundcloud.com/… oder youtube.com/watch?v=… oder youtu.be/…</div>
+          <input type="url" id="f-url" placeholder="https://soundcloud.com/… oder https://youtube.com/…" autocomplete="off">
+        </div>
+
+        <div class="field">
+          <label class="field-label">Titel *</label>
+          <input type="text" id="f-title" placeholder="Set-Name" autocomplete="off">
+        </div>
+
+        <div class="field">
+          <label class="field-label">Artist *</label>
+          <input type="text" id="f-artist" placeholder="DJ / Artist Name" autocomplete="off">
+        </div>
+
+        <div class="field">
+          <label class="field-label">Cover-Bild</label>
+          <div class="field-hint">Optional — Bild hochladen oder URL einfügen</div>
+          <div id="img-preview" style="display:none;position:relative;margin-bottom:.4rem">
+            <img id="img-preview-img" style="width:100%;height:120px;object-fit:cover;border:var(--b);display:block" src="">
+            <button onclick="clearImage()" style="position:absolute;top:4px;right:4px;background:var(--fg);color:var(--bg);border:none;font-family:var(--mono);font-size:.6rem;padding:.2rem .5rem;cursor:pointer">✕ Remove</button>
+          </div>
+          <input type="file" id="f-image" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+          <button onclick="document.getElementById('f-image').click()" style="background:none;border:var(--b);color:var(--fg);padding:.5rem .75rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;width:100%;transition:background .1s" onmouseover="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseout="this.style.background='none';this.style.color='var(--fg)'">+ Bild hochladen</button>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-top:.4rem">
+            <span style="font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);flex-shrink:0">Oder URL:</span>
+            <input type="text" id="f-image-url" placeholder="https://i.imgur.com/…" style="flex:1" oninput="handleImageUrl(this.value)">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem">
+          <div class="field">
+            <label class="field-label">Länge</label>
+            <input type="text" id="f-duration" placeholder="1:22:07" autocomplete="off">
+          </div>
+          <div class="field">
+            <label class="field-label">Datum</label>
+            <input type="date" id="f-date">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Genre * <span style="color:#bbb;font-size:.5rem">(mind. 1)</span></label>
+          <div class="genre-chips" id="genre-chips"></div>
+          <div class="add-genre-row">
+            <input class="add-genre-input" id="new-genre-input" placeholder="Neues Genre…" autocomplete="off">
+            <button class="add-genre-btn" id="add-genre-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Tags</label>
+          <div class="field-hint">Enter zum Hinzufügen</div>
+          <div class="tags-wrap" id="tags-wrap">
+            <input class="tags-input" id="tags-input" placeholder="live, club, radio…" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Farbe</label>
+          <div class="color-row" id="color-row"></div>
+        </div>
+
+        <div class="submit-area">
+          <button class="submit-btn" id="submit-btn">Set speichern ↗</button>
+          <button class="cancel-btn" id="cancel-btn">Abbrechen</button>
+          <div class="status-msg" id="status-msg"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ARTISTS TAB -->
+  <div id="admin-tab-artists-panel" style="display:none;max-width:1100px">
+    <div class="admin-layout" style="grid-template-columns:1fr 420px">
+      <!-- ARTIST LIST -->
+      <div class="admin-list-panel">
+        <div class="admin-panel-head">
+          <div class="admin-panel-title">Alle Artists</div>
+          <span class="admin-set-count" id="admin-artist-count">—</span>
+        </div>
+        <div id="admin-artist-list"><div class="admin-empty">Lade…</div></div>
+      </div>
+
+      <!-- ARTIST EDIT FORM -->
+      <div class="admin-form-panel">
+        <div class="form-chrome">
+          <div class="dots"><div class="dot"></div><div class="dot"></div></div>
+          <div class="form-chrome-title" id="artist-form-title">Artist auswählen</div>
+        </div>
+        <div class="form-body" id="artist-form-body">
+          <div style="text-align:center;padding:2rem 0;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--grey)">← Artist aus der Liste wählen</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO TEXT TAB -->
+  <div id="admin-tab-info-panel" style="display:none;padding:2rem;max-width:700px">
+    <div class="form-chrome" style="margin-bottom:0">
+      <div class="dots"><div class="dot"></div><div class="dot"></div></div>
+      <div class="form-chrome-title">Info-Seite bearbeiten</div>
+    </div>
+    <div style="border:var(--b);border-top:none;padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem">
+      <div class="field">
+        <label class="field-label">Lauftext / Ticker</label>
+        <div class="field-hint">Begriffe mit Komma trennen — werden oben als Lauftext angezeigt</div>
+        <input class="field-input" id="info-ticker" placeholder="GLEIS 13, Mixes & Sets, Essen, Underground, Techno">
+      </div>
+      <div style="border-top:1px solid #ddd;padding-top:1.25rem">
+        <label class="field-label" style="margin-bottom:.6rem;display:block">Über-Seite</label>
+      </div>
+      <div class="field">
+        <label class="field-label">Headline</label>
+        <input class="field-input" id="info-headline" placeholder="Ein Archiv für elektronische Musik aus Essen.">
+      </div>
+      <div class="field">
+        <label class="field-label">Absatz 1</label>
+        <textarea class="field-input" id="info-p1" rows="4" style="resize:vertical;font-family:var(--mono);font-size:.72rem;line-height:1.6"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Absatz 2</label>
+        <textarea class="field-input" id="info-p2" rows="4" style="resize:vertical;font-family:var(--mono);font-size:.72rem;line-height:1.6"></textarea>
+      </div>
+      <div style="border-top:var(--b);padding-top:1.25rem;display:flex;flex-direction:column;gap:.75rem">
+        <label class="field-label">Kontakt</label>
+        <div style="display:grid;grid-template-columns:100px 1fr;align-items:center;gap:.5rem">
+          <span style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--grey)">E-Mail</span>
+          <input class="field-input" id="info-email" placeholder="hallo@gleis13.de">
+          <span style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--grey)">Instagram</span>
+          <input class="field-input" id="info-instagram" placeholder="@gleis13.essen">
+          <span style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--grey)">Soundcloud</span>
+          <input class="field-input" id="info-soundcloud" placeholder="soundcloud.com/gleis13">
+        </div>
+      </div>
+      <div class="submit-area">
+        <button class="submit-btn" onclick="saveInfoText()">Speichern ↗</button>
+        <div class="status-msg" id="info-status-msg"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV (mobile) -->
+<div class="bottom-nav" id="bottom-nav">
+  <button id="bn-mixes" class="active" onclick="showView('mixes')"><span class="bn-icon">♫</span>Mixes</button>
+  <button id="bn-favs" onclick="showView('favs')"><span class="bn-icon">♥</span>Favs</button>
+  <button id="bn-artists" onclick="showView('artists')"><span class="bn-icon">◉</span>Artists</button>
+  <button id="bn-info" onclick="showView('info')"><span class="bn-icon">ℹ</span>Info</button>
+  <button id="bn-user" onclick="userAction()"><span class="bn-icon">●</span><span id="bn-user-label">Login</span></button>
+</div>
+
+<!-- USER LOGIN MODAL -->
+<div class="user-modal" id="user-modal" style="display:none">
+  <div class="user-modal-box">
+    <div class="user-modal-head">
+      <span style="font-family:var(--display);font-size:1.2rem;letter-spacing:.04em" id="user-modal-title">Anmelden</span>
+      <button onclick="closeUserModal()" style="background:none;border:none;color:#666;font-size:.85rem;cursor:pointer;font-family:var(--mono)">✕</button>
+    </div>
+    <div class="user-modal-body" id="user-modal-body">
+      <div class="user-tabs">
+        <button class="user-tab active" id="ut-login" onclick="userTabSwitch('login')">Login</button>
+        <button class="user-tab" id="ut-register" onclick="userTabSwitch('register')">Registrieren</button>
+      </div>
+      <div id="user-form-login">
+        <div class="field" style="margin-bottom:.75rem">
+          <label class="field-label">Username</label>
+          <input type="text" id="u-login-name" placeholder="Dein Username" autocomplete="off">
+        </div>
+        <div class="field" style="margin-bottom:.75rem">
+          <label class="field-label">Passwort</label>
+          <input type="password" id="u-login-pw" placeholder="Passwort" autocomplete="off">
+        </div>
+        <button class="submit-btn" onclick="doUserLogin()">Einloggen ↗</button>
+      </div>
+      <div id="user-form-register" style="display:none">
+        <div class="field" style="margin-bottom:.75rem">
+          <label class="field-label">Username wählen</label>
+          <input type="text" id="u-reg-name" placeholder="z.B. djmax99" autocomplete="off">
+        </div>
+        <div class="field" style="margin-bottom:.75rem">
+          <label class="field-label">Passwort</label>
+          <input type="password" id="u-reg-pw" placeholder="Mind. 4 Zeichen" autocomplete="off">
+        </div>
+        <button class="submit-btn" onclick="doUserRegister()">Account erstellen ↗</button>
+      </div>
+      <div class="status-msg" id="user-msg" style="margin-top:.75rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- USER MENU MODAL -->
+<div class="user-modal" id="user-menu-modal" style="display:none">
+  <div class="user-modal-box">
+    <div class="user-modal-head">
+      <span style="font-family:var(--display);font-size:1.2rem;letter-spacing:.04em" id="um-title"></span>
+      <button onclick="closeUserModal()" style="background:none;border:none;color:#666;font-size:.85rem;cursor:pointer;font-family:var(--mono)">✕</button>
+    </div>
+    <div class="user-modal-body" style="display:flex;flex-direction:column;gap:.75rem" id="um-body"></div>
+  </div>
+</div>
+
+<!-- TOAST & LOADING -->
+<div class="toast" id="toast"></div>
+<div class="loading-overlay" id="loading"><div class="loading-text">Speichern</div></div>
+
+<!-- STICKY PLAYER -->
+<!-- EXPANDED PLAYER OVERLAY -->
+<div id="sp-expanded" style="
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,0.92);
+  align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);
+">
+  <div style="width:min(680px,92vw);background:var(--fg);border:2px solid #222;box-shadow:12px 12px 0 rgba(0,0,0,0.6)">
+    <!-- header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;border-bottom:1px solid #222;background:var(--light)">
+      <span style="font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;color:var(--grey)">Jetzt läuft</span>
+      <button onclick="spCollapse()" style="background:none;border:none;color:#666;font-size:.8rem;cursor:pointer;font-family:'Share Tech Mono',monospace;letter-spacing:.06em;transition:color .1s" onmouseover="this.style.color='var(--bg)'" onmouseout="this.style.color='#666'">✕ Schließen</button>
+    </div>
+    <!-- cover image -->
+    <div id="sp-exp-cover" style="width:100%;padding-bottom:56.25%;background:#111 center/cover no-repeat;border-bottom:1px solid #222;position:relative">
+      <div id="sp-exp-stripe" style="position:absolute;bottom:0;left:0;right:0;height:4px"></div>
+    </div>
+    <!-- title + artist -->
+    <div style="padding:1.25rem 1.5rem;border-bottom:1px solid #222;display:flex;align-items:flex-start;justify-content:space-between">
+      <div style="min-width:0;flex:1">
+        <div id="sp-exp-title" style="font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:.03em;color:var(--bg);line-height:1.05"></div>
+        <div id="sp-exp-artist" style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:#666;margin-top:.3rem"></div>
+      </div>
+      <button onclick="shareExpanded(this)" style="flex-shrink:0;margin-left:1rem;margin-top:.4rem;background:none;border:1px solid #444;color:#888;font-family:var(--mono);font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;padding:.35rem .75rem;cursor:pointer;transition:all .15s;position:relative" onmouseover="this.style.borderColor='#f5c800';this.style.color='#f5c800'" onmouseout="this.style.borderColor='#444';this.style.color='#888'">Teilen ↗<span id="copied-exp" style="position:absolute;top:-1.6rem;right:0;background:var(--bg);color:var(--fg);font-size:.5rem;padding:.15rem .4rem;white-space:nowrap;opacity:0;transition:all .2s;pointer-events:none">✓ Kopiert</span></button>
+    </div>
+    <!-- progress + controls -->
+    <div style="padding:1rem 1.5rem 1.25rem;display:flex;align-items:center;gap:1rem">
+      <button id="sp-exp-playbtn" onclick="spTogglePlay()" style="width:52px;height:52px;flex-shrink:0;background:none;border:1.5px solid #444;color:var(--bg);font-size:.8rem;cursor:pointer;transition:all .1s" onmouseover="this.style.borderColor='#f5c800';this.style.color='#f5c800'" onmouseout="this.style.borderColor='#444';this.style.color='var(--bg)'">▶</button>
+      <div style="flex:1;min-width:0">
+        <div id="sp-exp-progress" style="height:5px;background:#222;cursor:pointer;margin-bottom:.5rem" onclick="spSeekExp(event)">
+          <div id="sp-exp-bar" style="height:100%;background:#f5c800;width:0%"></div>
+        </div>
+        <div id="sp-exp-time" style="font-size:.58rem;color:#555;letter-spacing:.08em">0:00 / —</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sticky-player" style="
+  position:fixed;
+  bottom:1.5rem;
+  left:1.5rem;
+  width:500px;
+  z-index:100;
+  background:var(--fg);
+  border:2px solid #222;
+  display:none;
+  flex-direction:column;
+  transform:translateY(calc(100% + 2rem));
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
+  box-shadow:8px 8px 0 rgba(0,0,0,0.5);
+">
+  <!-- top row: thumb + info + expand + close -->
+  <div style="display:flex;align-items:stretch;border-bottom:1px solid #222">
+    <div id="sp-thumb" style="width:108px;height:108px;flex-shrink:0;background:#111 center/cover no-repeat;border-right:1px solid #222"></div>
+    <div id="sp-stripe" style="width:4px;flex-shrink:0"></div>
+    <div style="flex:1;min-width:0;padding:.75rem 1rem;display:flex;flex-direction:column;justify-content:center;overflow:hidden">
+      <div id="sp-title" style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.04em;color:var(--bg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2"></div>
+      <div id="sp-artist" style="font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:#666;margin-top:.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;border-left:1px solid #222">
+      <button onclick="spExpand()" title="Vergrößern" style="flex:1;width:48px;background:none;border:none;border-bottom:1px solid #222;color:#555;font-size:.75rem;cursor:pointer;transition:color .1s" onmouseover="this.style.color='#f5c800'" onmouseout="this.style.color='#555'">⤢</button>
+      <button onclick="spClose()" title="Schließen" style="flex:1;width:48px;background:none;border:none;color:#555;font-size:.85rem;cursor:pointer;transition:color .1s;font-family:'Share Tech Mono',monospace" onmouseover="this.style.color='var(--bg)'" onmouseout="this.style.color='#555'">✕</button>
+    </div>
+  </div>
+  <!-- bottom row: play + progress -->
+  <div style="display:flex;align-items:center;gap:0;padding:.75rem 1rem .75rem 0">
+    <button id="sp-playbtn" onclick="spTogglePlay()" style="width:72px;height:48px;flex-shrink:0;background:none;border:none;color:var(--bg);font-size:.85rem;cursor:pointer;transition:color .1s;border-right:1px solid #222;margin-right:1rem" onmouseover="this.style.color='#f5c800'" onmouseout="this.style.color='var(--bg)'">▶</button>
+    <div style="flex:1;min-width:0">
+      <div id="sp-progress" style="height:4px;background:#333;cursor:pointer;margin-bottom:.45rem" onclick="spSeek(event)">
+        <div id="sp-bar" style="height:100%;background:#f5c800;width:0%"></div>
+      </div>
+      <div id="sp-time" style="font-size:.58rem;color:#555;letter-spacing:.08em">0:00 / —</div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
