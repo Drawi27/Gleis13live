@@ -654,19 +654,19 @@ function renderGrid(filter) {
       </div>
       <div class="card-player">
         ${platform === 'youtube' ? `
-          <div id="yt-container-${idx}" style="position:relative;padding-bottom:56.25%;background:#000 center/cover no-repeat;border-bottom:1px solid #222;cursor:pointer;background-image:url(https://img.youtube.com/vi/${getYoutubeId(s.soundcloud_url)}/hqdefault.jpg)" onclick="ytPlay(${idx})">
-            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);transition:background .15s" onmouseover="this.style.background='rgba(0,0,0,0.15)'" onmouseout="this.style.background='rgba(0,0,0,0.35)'">
-              <div style="width:64px;height:44px;background:#d63c1f;border-radius:8px;display:flex;align-items:center;justify-content:center">
-                <div style="width:0;height:0;border-style:solid;border-width:10px 0 10px 18px;border-color:transparent transparent transparent white;margin-left:3px"></div>
-              </div>
+          <div id="yt-container-${idx}" style="position:relative;background:#000;border-bottom:1px solid #222">
+            <div style="position:relative;padding-bottom:56.25%">
+              <iframe id="yt-iframe-${idx}" style="position:absolute;inset:0;width:100%;height:100%;border:none"
+                allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen
+                src="https://www.youtube.com/embed/${getYoutubeId(s.soundcloud_url)}?rel=0&modestbranding=1&enablejsapi=1"></iframe>
             </div>
           </div>
           <div class="mini-player" id="mini-${idx}">
-            <div style="width:32px;height:32px;border:1.5px solid #d63c1f;color:#d63c1f;display:flex;align-items:center;justify-content:center;font-size:.5rem;flex-shrink:0;letter-spacing:.06em">YT</div>
+            <div style="width:32px;height:32px;border:1.5px solid #d63c1f;color:#d63c1f;display:flex;align-items:center;justify-content:center;font-size:.5rem;flex-shrink:0;letter-spacing:.06em;font-family:var(--mono)">YT</div>
             <div class="mini-info">
               <div class="mini-title">${s.artist} — ${s.title}</div>
-              <div style="display:flex;gap:.5rem;margin-top:.25rem">
-                <a href="${s.soundcloud_url}" target="_blank" style="font-size:.48rem;color:#d63c1f;letter-spacing:.1em;text-transform:uppercase;text-decoration:none">Auf YouTube öffnen ↗</a>
+              <div style="display:flex;gap:.6rem;margin-top:.25rem;align-items:center">
+                <a href="${s.soundcloud_url}" target="_blank" rel="noopener" style="font-size:.48rem;color:#d63c1f;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:opacity .1s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">YouTube ↗</a>
               </div>
             </div>
           </div>
@@ -754,7 +754,12 @@ function toggleCard(idx) {
       const platform = getPlatform(s.soundcloud_url);
 
       if (platform === 'youtube') {
-        // YouTube uses click-to-play thumbnail, just show the sticky player
+        // Set YouTube iframe to autoplay
+        const ytFrame = document.getElementById('yt-iframe-' + idx);
+        const ytId = getYoutubeId(s.soundcloud_url);
+        if (ytFrame && ytId) {
+          ytFrame.src = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0&modestbranding=1&enablejsapi=1';
+        }
         spShow(idx);
       } else {
         const iframe = document.getElementById('iframe-' + idx);
@@ -878,18 +883,8 @@ function spExpand() {
 
   if (platform === 'youtube') {
     const ytId = getYoutubeId(s.soundcloud_url);
-    cover.style.paddingBottom = '56.25%';
-    cover.style.position = 'relative';
-    cover.style.backgroundImage = 'url(https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg)';
-    cover.style.backgroundSize = 'cover';
-    cover.style.backgroundPosition = 'center';
-    cover.style.cursor = 'pointer';
-    cover.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3)"><div style="width:72px;height:50px;background:#d63c1f;border-radius:10px;display:flex;align-items:center;justify-content:center"><div style="width:0;height:0;border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent white;margin-left:4px"></div></div></div><div id="sp-exp-stripe" style="position:absolute;bottom:0;left:0;right:0;height:4px;background:' + (s.color||'#333') + '"></div>';
-    cover.onclick = function() {
-      cover.onclick = null;
-      cover.style.cursor = 'default';
-      cover.innerHTML = '<iframe style="position:absolute;inset:0;width:100%;height:100%;border:none" src="https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>';
-    };
+    cover.style.cssText = 'position:relative;padding-bottom:56.25%;background:#000;border-bottom:1px solid #222';
+    cover.innerHTML = '<iframe style="position:absolute;inset:0;width:100%;height:100%;border:none" src="https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe><div id="sp-exp-stripe" style="position:absolute;bottom:0;left:0;right:0;height:4px;background:' + (s.color||'#333') + '"></div>';
     document.getElementById('sp-exp-playbtn').style.display = 'none';
   } else {
     cover.innerHTML = `<div id="sp-exp-stripe" style="position:absolute;bottom:0;left:0;right:0;height:4px;background:${s.color||'#333'}"></div>`;
@@ -1426,34 +1421,6 @@ function getYoutubeId(url) {
   if (match) return match[1];
   return '';
 }
-function ytPlay(idx) {
-  const s = SETS[idx];
-  const ytId = getYoutubeId(s.soundcloud_url);
-  if (!ytId) return;
-  const container = document.getElementById('yt-container-' + idx);
-  if (!container) return;
-
-  // Try iframe embed first, with fallback to opening YouTube directly
-  try {
-    container.onclick = null;
-    container.style.cursor = 'default';
-    const iframe = document.createElement('iframe');
-    iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none';
-    iframe.allow = 'autoplay;encrypted-media;picture-in-picture';
-    iframe.allowFullscreen = true;
-    iframe.src = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0&modestbranding=1';
-    // If iframe fails to load, open YouTube directly
-    iframe.onerror = function() { window.open(s.soundcloud_url, '_blank'); };
-    container.innerHTML = '';
-    container.appendChild(iframe);
-    spShow(idx);
-    spUpdatePlay(true);
-  } catch(e) {
-    // Fallback: open YouTube in new tab
-    window.open(s.soundcloud_url, '_blank');
-  }
-}
-
 /* ═══════════════════════════════
    SHARE
 ═══════════════════════════════ */
