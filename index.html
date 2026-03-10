@@ -427,6 +427,40 @@
   <button id="bn-user" onclick="userAction()"><span class="bn-icon">●</span><span id="bn-user-label">Login</span></button>
 </div>
 
+<!-- YOUTUBE PiP PLAYER -->
+<div id="yt-pip" style="
+  position:fixed;
+  bottom:1.5rem;
+  right:1.5rem;
+  width:380px;
+  z-index:100;
+  background:var(--fg);
+  border:2px solid #222;
+  display:none;
+  flex-direction:column;
+  transform:translateY(calc(100% + 2rem));
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
+  box-shadow:8px 8px 0 rgba(0,0,0,0.5);
+">
+  <!-- video -->
+  <div style="position:relative;border-bottom:1px solid #222">
+    <div style="position:relative;padding-bottom:56.25%;background:#000">
+      <iframe id="yt-pip-iframe" style="position:absolute;inset:0;width:100%;height:100%;border:none"
+        allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen src=""></iframe>
+    </div>
+  </div>
+  <!-- info bar -->
+  <div style="display:flex;align-items:center;gap:.75rem;padding:.6rem .75rem">
+    <div id="yt-pip-stripe" style="width:4px;height:32px;flex-shrink:0"></div>
+    <div style="flex:1;min-width:0">
+      <div id="yt-pip-title" style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.04em;color:var(--bg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2"></div>
+      <div id="yt-pip-artist" style="font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:#666;margin-top:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+    </div>
+    <a id="yt-pip-link" href="#" target="_blank" rel="noopener" style="flex-shrink:0;font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;color:#d63c1f;text-decoration:none;border:1px solid #333;padding:.25rem .5rem;transition:all .1s" onmouseover="this.style.background='#d63c1f';this.style.color='white';this.style.borderColor='#d63c1f'" onmouseout="this.style.background='none';this.style.color='#d63c1f';this.style.borderColor='#333'">YT ↗</a>
+    <button onclick="ytPipClose()" style="flex-shrink:0;background:none;border:none;color:#555;font-size:.85rem;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:color .1s;padding:0 .2rem" onmouseover="this.style.color='var(--bg)'" onmouseout="this.style.color='#555'">✕</button>
+  </div>
+</div>
+
 <!-- USER LOGIN MODAL -->
 <div class="user-modal" id="user-modal" style="display:none">
   <div class="user-modal-box">

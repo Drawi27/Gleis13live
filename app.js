@@ -654,20 +654,11 @@ function renderGrid(filter) {
       </div>
       <div class="card-player">
         ${platform === 'youtube' ? `
-          <div id="yt-container-${idx}" style="position:relative;background:#000;border-bottom:1px solid #222">
-            <div style="position:relative;padding-bottom:56.25%">
-              <iframe id="yt-iframe-${idx}" style="position:absolute;inset:0;width:100%;height:100%;border:none"
-                allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen
-                src="https://www.youtube.com/embed/${getYoutubeId(s.soundcloud_url)}?rel=0&modestbranding=1&enablejsapi=1"></iframe>
-            </div>
-          </div>
-          <div class="mini-player" id="mini-${idx}">
-            <div style="width:32px;height:32px;border:1.5px solid #d63c1f;color:#d63c1f;display:flex;align-items:center;justify-content:center;font-size:.5rem;flex-shrink:0;letter-spacing:.06em;font-family:var(--mono)">YT</div>
+          <div class="mini-player">
+            <div style="width:32px;height:32px;border:1.5px solid #d63c1f;color:#d63c1f;display:flex;align-items:center;justify-content:center;font-size:.5rem;flex-shrink:0;letter-spacing:.06em;font-family:var(--mono)">▶</div>
             <div class="mini-info">
               <div class="mini-title">${s.artist} — ${s.title}</div>
-              <div style="display:flex;gap:.6rem;margin-top:.25rem;align-items:center">
-                <a href="${s.soundcloud_url}" target="_blank" rel="noopener" style="font-size:.48rem;color:#d63c1f;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:opacity .1s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">YouTube ↗</a>
-              </div>
+              <div style="font-size:.48rem;color:#d63c1f;letter-spacing:.1em;text-transform:uppercase;margin-top:.2rem">YouTube · Wird im PiP-Player abgespielt</div>
             </div>
           </div>
         ` : `
@@ -739,9 +730,8 @@ function toggleCard(idx) {
   if (openCard !== null && openCard !== idx) {
     const w = SC_WIDGETS[openCard];
     if (w) { try { w.pause(); } catch(e){} }
-    // Also stop YouTube if playing
-    const ytFrame = document.getElementById('yt-iframe-' + openCard);
-    if (ytFrame) ytFrame.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+    // Stop YouTube PiP if switching cards
+    if (ytPipIdx !== null) ytPipHide();
     clearInterval(scTimer);
   }
   const wasOpen = openCard === idx;
@@ -754,12 +744,7 @@ function toggleCard(idx) {
       const platform = getPlatform(s.soundcloud_url);
 
       if (platform === 'youtube') {
-        // Set YouTube iframe to autoplay
-        const ytFrame = document.getElementById('yt-iframe-' + idx);
-        const ytId = getYoutubeId(s.soundcloud_url);
-        if (ytFrame && ytId) {
-          ytFrame.src = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0&modestbranding=1&enablejsapi=1';
-        }
+        // YouTube: show PiP player (no in-card iframe needed)
         spShow(idx);
       } else {
         const iframe = document.getElementById('iframe-' + idx);
@@ -821,6 +806,16 @@ function spShow(idx) {
   const s = SETS[idx];
   if (!s) return;
   spIdx = idx;
+  const platform = getPlatform(s.soundcloud_url);
+
+  if (platform === 'youtube') {
+    // Use PiP player for YouTube
+    ytPipShow(idx);
+    return;
+  }
+
+  // SoundCloud: use regular sticky player
+  ytPipHide(); // hide PiP if it was showing
   const sp = document.getElementById('sticky-player');
   document.getElementById('sp-title').textContent = s.title;
   document.getElementById('sp-artist').textContent = s.artist;
@@ -830,23 +825,19 @@ function spShow(idx) {
   thumb.style.background = s.image ? `url(${s.image}) center/cover no-repeat` : (s.color || '#111');
   sp.style.display = 'flex';
   requestAnimationFrame(() => { sp.style.transform = 'translateY(0)'; });
-
 }
 
 function spHide() {
   const sp = document.getElementById('sticky-player');
   sp.style.transform = 'translateY(100%)';
   setTimeout(() => { sp.style.display = 'none'; }, 260);
-
   spIdx = null;
 }
 
 function spClose() {
-  // also close the open card
   if (openCard !== null) {
     const w = SC_WIDGETS[openCard];
     if (w) { try { w.pause(); } catch(e){} }
-    // Stop YouTube
     const ytFrame = document.getElementById('yt-iframe-' + openCard);
     if (ytFrame) { ytFrame.src = ''; }
     clearInterval(scTimer);
@@ -854,6 +845,54 @@ function spClose() {
     renderGrid(activeFilter);
   }
   spHide();
+  ytPipHide();
+}
+
+/* ── YouTube PiP Player ── */
+let ytPipIdx = null;
+
+function ytPipShow(idx) {
+  const s = SETS[idx];
+  if (!s) return;
+  ytPipIdx = idx;
+  const ytId = getYoutubeId(s.soundcloud_url);
+
+  // Hide SC sticky player if showing
+  const sp = document.getElementById('sticky-player');
+  sp.style.transform = 'translateY(100%)';
+  setTimeout(() => { sp.style.display = 'none'; }, 260);
+
+  // Setup PiP
+  const pip = document.getElementById('yt-pip');
+  document.getElementById('yt-pip-iframe').src = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0&modestbranding=1';
+  document.getElementById('yt-pip-title').textContent = s.title;
+  document.getElementById('yt-pip-artist').textContent = s.artist;
+  document.getElementById('yt-pip-stripe').style.background = s.color || '#d63c1f';
+  document.getElementById('yt-pip-link').href = s.soundcloud_url;
+
+  pip.style.display = 'flex';
+  requestAnimationFrame(() => { pip.classList.add('visible'); });
+}
+
+function ytPipHide() {
+  const pip = document.getElementById('yt-pip');
+  pip.classList.remove('visible');
+  setTimeout(() => {
+    pip.style.display = 'none';
+    document.getElementById('yt-pip-iframe').src = '';
+  }, 300);
+  ytPipIdx = null;
+}
+
+function ytPipClose() {
+  if (openCard !== null) {
+    const ytFrame = document.getElementById('yt-iframe-' + openCard);
+    if (ytFrame) { ytFrame.src = ''; }
+    openCard = null;
+    renderGrid(activeFilter);
+  }
+  ytPipHide();
+  spIdx = null;
 }
 
 function spTogglePlay() {
@@ -875,31 +914,40 @@ function spExpand() {
   if (spIdx === null) return;
   const s = SETS[spIdx];
   const platform = getPlatform(s.soundcloud_url);
+
+  if (platform === 'youtube') {
+    // For YouTube: open in expanded overlay with embedded player
+    const exp = document.getElementById('sp-expanded');
+    const ytId = getYoutubeId(s.soundcloud_url);
+    document.getElementById('sp-exp-title').textContent = s.title;
+    document.getElementById('sp-exp-artist').textContent = s.artist;
+    const cover = document.getElementById('sp-exp-cover');
+    cover.style.cssText = 'position:relative;padding-bottom:56.25%;background:#000;border-bottom:1px solid #222';
+    cover.innerHTML = '<iframe style="position:absolute;inset:0;width:100%;height:100%;border:none" src="https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe><div id="sp-exp-stripe" style="position:absolute;bottom:0;left:0;right:0;height:4px;background:' + (s.color||'#333') + '"></div>';
+    document.getElementById('sp-exp-playbtn').style.display = 'none';
+    // Pause PiP while expanded is open
+    document.getElementById('yt-pip-iframe').src = '';
+    exp.style.display = 'flex';
+    requestAnimationFrame(() => exp.style.opacity = '1');
+    return;
+  }
+
   const exp = document.getElementById('sp-expanded');
   document.getElementById('sp-exp-title').textContent = s.title;
   document.getElementById('sp-exp-artist').textContent = s.artist;
   document.getElementById('sp-exp-stripe').style.background = s.color || '#333';
   const cover = document.getElementById('sp-exp-cover');
-
-  if (platform === 'youtube') {
-    const ytId = getYoutubeId(s.soundcloud_url);
-    cover.style.cssText = 'position:relative;padding-bottom:56.25%;background:#000;border-bottom:1px solid #222';
-    cover.innerHTML = '<iframe style="position:absolute;inset:0;width:100%;height:100%;border:none" src="https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe><div id="sp-exp-stripe" style="position:absolute;bottom:0;left:0;right:0;height:4px;background:' + (s.color||'#333') + '"></div>';
-    document.getElementById('sp-exp-playbtn').style.display = 'none';
-  } else {
-    cover.innerHTML = `<div id="sp-exp-stripe" style="position:absolute;bottom:0;left:0;right:0;height:4px;background:${s.color||'#333'}"></div>`;
-    cover.style.backgroundImage = s.image ? `url(${s.image})` : 'none';
-    cover.style.background = s.image ? `url(${s.image}) center/cover no-repeat` : (s.color || '#111');
-    cover.style.paddingBottom = '56.25%';
-    document.getElementById('sp-exp-playbtn').style.display = '';
-    // sync progress
-    const bar = document.getElementById('sp-bar');
-    if (bar) document.getElementById('sp-exp-bar').style.width = bar.style.width;
-    const time = document.getElementById('sp-time');
-    if (time) document.getElementById('sp-exp-time').textContent = time.textContent;
-    const playbtn = document.getElementById('sp-playbtn');
-    if (playbtn) document.getElementById('sp-exp-playbtn').textContent = playbtn.textContent;
-  }
+  cover.innerHTML = `<div id="sp-exp-stripe" style="position:absolute;bottom:0;left:0;right:0;height:4px;background:${s.color||'#333'}"></div>`;
+  cover.style.backgroundImage = s.image ? `url(${s.image})` : 'none';
+  cover.style.background = s.image ? `url(${s.image}) center/cover no-repeat` : (s.color || '#111');
+  cover.style.paddingBottom = '56.25%';
+  document.getElementById('sp-exp-playbtn').style.display = '';
+  const bar = document.getElementById('sp-bar');
+  if (bar) document.getElementById('sp-exp-bar').style.width = bar.style.width;
+  const time = document.getElementById('sp-time');
+  if (time) document.getElementById('sp-exp-time').textContent = time.textContent;
+  const playbtn = document.getElementById('sp-playbtn');
+  if (playbtn) document.getElementById('sp-exp-playbtn').textContent = playbtn.textContent;
   exp.style.display = 'flex';
   requestAnimationFrame(() => exp.style.opacity = '1');
 }

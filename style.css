@@ -395,6 +395,7 @@ textarea.field-input::placeholder,.field-input::placeholder{color:#bbb}
 
   /* sticky player: full width */
   #sticky-player{left:.5rem!important;right:.5rem!important;width:auto!important;bottom:calc(56px + .5rem)!important}
+  #yt-pip{left:.5rem!important;right:.5rem!important;width:auto!important;bottom:calc(56px + .5rem)!important}
   #sp-thumb{width:72px!important;height:72px!important}
 
   /* expanded player */
@@ -447,6 +448,10 @@ textarea.field-input::placeholder,.field-input::placeholder{color:#bbb}
   cursor:pointer;transition:all .1s;border-bottom:2px solid transparent}
 .user-tab.active{color:var(--fg);border-bottom-color:#f5c800}
 .user-tab:hover{color:var(--fg)}
+
+/* ═══ YOUTUBE PiP PLAYER ═══ */
+#yt-pip.visible{transform:translateY(0)}
+body.crt #yt-pip{box-shadow:8px 8px 0 rgba(0,0,0,0.5),0 0 20px rgba(213,60,31,0.1)}
 
 /* ═══ CRT FILTER ═══ */
 /* soft glow on accent elements */
