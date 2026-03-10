@@ -154,7 +154,7 @@ nav a:hover,nav a.active,nav button:hover{background:var(--fg);color:var(--bg)}
 .share-copied.show{opacity:1;transform:translateY(0)}
 .card-player{display:none;border-top:var(--b)}
 .card.open .card-player{display:block}
-.card-player iframe{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.card-player iframe[id^="iframe-"]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .mini-player{background:var(--fg);padding:.6rem .75rem;display:flex;align-items:center;gap:.75rem}
 .mini-play{width:32px;height:32px;border:1.5px solid #444;color:var(--bg);display:flex;align-items:center;
   justify-content:center;cursor:pointer;font-size:.6rem;flex-shrink:0;transition:all .1s;background:none}
